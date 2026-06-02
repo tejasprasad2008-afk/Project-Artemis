@@ -15,6 +15,8 @@ Build a premium, high-tech SaaS landing page for a project called ‘Project Art
 
 6. Follow-up enhancement: Redesign simulation with a larger radar grid, smaller secure zone, synced X/Y coordinate inputs, and compact terminal feedback.
 
+7. Follow-up enhancement: Mask simulation state labels and visual color changes so visitors must infer whether the node is secured.
+
 ## User Choices
 - Waitlist signups are stored in MongoDB and displayed in an admin-style access queue on the page.
 - Simulation node starts inside the secure zone with green verified state.
@@ -29,7 +31,7 @@ Build a premium, high-tech SaaS landing page for a project called ‘Project Art
 ## Implemented
 - Premium dark cyberpunk SaaS landing page for Project Artemis.
 - Hero with Aegis Proximity Vault messaging and Launch Console CTA.
-- Interactive enlarged draggable radar grid with a smaller secure zone, synced X/Y coordinate inputs, and compact terminal logs for secure/breach states.
+- Interactive enlarged draggable radar grid with a smaller secure zone, synced X/Y coordinate inputs, masked node styling, and terminal telemetry that does not reveal secure/purged state.
 - Features grid covering UWB spatial tracking, automated key burning, and zero-trust containment.
 - Waitlist form with name, firm/company, email, database persistence, duplicate email handling, toasts, and admin-style list.
 - Backend regression tests added for waitlist API.

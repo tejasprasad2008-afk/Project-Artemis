@@ -8,8 +8,8 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 const secureZone = { x: 47, y: 43, width: 7, height: 9 };
-const secureLogLine = "[SECURE] NIST ML-KEM Session Active // Streaming Lattice Math...";
-const alertLogLine = "[ALERT] Core Boundary Breach // Volatile RAM Purged";
+const maskedLogLine = "[TRACE] Lattice telemetry sampling // Boundary classifier withheld...";
+const jitterLogLine = "[TRACE] Coordinate variance detected // Trust state masked...";
 
 const features = [
   {
@@ -37,7 +37,7 @@ function SimulationWidget() {
   const [node, setNode] = useState({ x: 50.5, y: 47.5 });
   const [dragging, setDragging] = useState(false);
   const [flash, setFlash] = useState(false);
-  const [terminalLines, setTerminalLines] = useState([secureLogLine]);
+  const [terminalLines, setTerminalLines] = useState([maskedLogLine]);
 
   const isInside = useMemo(() => {
     return (
@@ -51,7 +51,7 @@ function SimulationWidget() {
   useEffect(() => {
     if (!isInside) {
       if (wasInsideRef.current) {
-        setTerminalLines([alertLogLine]);
+        setTerminalLines([jitterLogLine]);
         setFlash(true);
         const timer = setTimeout(() => setFlash(false), 520);
         wasInsideRef.current = false;
@@ -61,12 +61,12 @@ function SimulationWidget() {
     }
 
     if (!wasInsideRef.current) {
-      setTerminalLines([secureLogLine]);
+      setTerminalLines([maskedLogLine]);
       wasInsideRef.current = true;
     }
 
     const stream = setInterval(() => {
-      setTerminalLines((lines) => [...lines.slice(-3), secureLogLine]);
+      setTerminalLines((lines) => [...lines.slice(-3), maskedLogLine]);
     }, 1450);
 
     return () => clearInterval(stream);
@@ -97,18 +97,15 @@ function SimulationWidget() {
           <p className="eyebrow" data-testid="simulation-eyebrow">Live proximity simulation</p>
           <h2 data-testid="simulation-title">Drag the access node through the vault grid.</h2>
         </div>
-        <div
-          className={`state-pill ${isInside ? "verified" : "purged"} ${flash ? "flash" : ""}`}
-          data-testid="simulation-state-pill"
-        >
-          {isInside ? "SECURE" : "PURGED"}
+        <div className={`state-pill masked ${flash ? "flash" : ""}`} data-testid="simulation-state-pill">
+          STATE MASKED
         </div>
       </div>
 
       <div className="simulation-console-layout" data-testid="simulation-console-layout">
         <div
           ref={panelRef}
-          className={`grid-stage ${!isInside ? "danger" : ""}`}
+          className="grid-stage"
           data-testid="simulation-grid-canvas"
           onMouseDown={(event) => {
             setDragging(true);
@@ -132,7 +129,7 @@ function SimulationWidget() {
           <div className="scanline" data-testid="simulation-scanline" />
           <div className="node-trail" style={{ left: `${node.x}%`, top: `${node.y}%` }} data-testid="simulation-node-trail" />
           <button
-            className={`drag-node ${isInside ? "inside" : "outside"}`}
+            className="drag-node masked"
             style={{ left: `${node.x}%`, top: `${node.y}%` }}
             data-testid="simulation-draggable-node"
             aria-label="Drag proximity node"
@@ -172,7 +169,7 @@ function SimulationWidget() {
         </div>
       </div>
 
-      <div className={`terminal-log ${isInside ? "verified" : "breach"} ${flash ? "flash" : ""}`} data-testid="simulation-terminal-log">
+      <div className={`terminal-log masked ${flash ? "flash" : ""}`} data-testid="simulation-terminal-log">
         {terminalLines.map((line, index) => (
           <div key={`${line}-${index}`} data-testid={`terminal-log-line-${index}`}>
             {line}
