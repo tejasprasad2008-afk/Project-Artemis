@@ -59,7 +59,7 @@ async def root():
     return {"message": "Project Artemis API online"}
 
 
-@api_router.post("/waitlist", response_model=WaitlistEntry)
+@api_router.post("/waitlist", response_model=WaitlistEntry, status_code=201)
 async def create_waitlist_entry(input: WaitlistCreate):
     clean_email = input.email.lower().strip()
     clean_name = " ".join(input.name.strip().split())

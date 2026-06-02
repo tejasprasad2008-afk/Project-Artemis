@@ -1,0 +1,24 @@
+.simulation-card { border-radius: 2rem; padding: clamp(1rem, 3vw, 1.6rem); margin-bottom: 6rem; }
+.simulation-head { display: flex; justify-content: space-between; gap: 1.5rem; align-items: flex-start; margin-bottom: 1rem; }
+.simulation-head h2, .section-intro h2, .waitlist-copy h2 { font-size: clamp(2rem, 5vw, 4.5rem); line-height: 0.94; letter-spacing: -0.075em; margin-bottom: 0; }
+.state-pill { flex: 0 0 auto; padding: 0.82rem 1rem; border-radius: 999px; font-size: 0.78rem; border: 1px solid currentColor; }
+.state-pill.verified { color: var(--green); background: var(--green-soft); }
+.state-pill.purged { color: var(--amber); background: var(--amber-soft); }
+.state-pill.flash { animation: purgeFlash 420ms ease; }
+.grid-stage { position: relative; width: 100%; aspect-ratio: 16 / 7; min-height: 320px; overflow: hidden; border-radius: 1.4rem; border: 1px solid rgba(66, 255, 155, 0.14); cursor: crosshair; touch-action: none; background: linear-gradient(rgba(66, 255, 155, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(66, 255, 155, 0.08) 1px, transparent 1px), radial-gradient(circle at center, rgba(66, 255, 155, 0.12), transparent 42%), rgba(2, 8, 7, 0.92); background-size: 38px 38px, 38px 38px, auto, auto; transition: border-color 180ms ease, box-shadow 180ms ease; }
+.grid-stage.danger { border-color: rgba(255, 184, 77, 0.42); box-shadow: inset 0 0 80px rgba(255, 184, 77, 0.08); }
+.secure-box { position: absolute; border: 1px solid rgba(66, 255, 155, 0.8); border-radius: 0.4rem; background: repeating-linear-gradient(135deg, rgba(66, 255, 155, 0.1), rgba(66, 255, 155, 0.1) 8px, transparent 8px, transparent 18px); box-shadow: 0 0 34px rgba(66, 255, 155, 0.16), inset 0 0 28px rgba(66, 255, 155, 0.08); }
+.scanline { position: absolute; inset: 0; background: linear-gradient(180deg, transparent, rgba(66, 255, 155, 0.16), transparent); height: 28%; animation: scan 4.5s ease-in-out infinite; }
+.node-trail, .drag-node { position: absolute; transform: translate(-50%, -50%); }
+.node-trail { width: 8rem; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, rgba(66, 255, 155, 0.2), transparent 65%); pointer-events: none; }
+.drag-node { width: 3.1rem; aspect-ratio: 1; border: 0; border-radius: 50%; cursor: grab; background: rgba(255, 255, 255, 0.08); display: grid; place-items: center; transition: background-color 160ms ease, box-shadow 160ms ease; }
+.drag-node:active { cursor: grabbing; }
+.drag-node span { width: 1.1rem; aspect-ratio: 1; border-radius: 50%; background: currentColor; }
+.drag-node.inside { color: var(--green); box-shadow: 0 0 34px rgba(66, 255, 155, 0.7); }
+.drag-node.outside { color: var(--amber); box-shadow: 0 0 34px rgba(255, 184, 77, 0.7); }
+.cipher-status { margin-top: 1rem; padding: 1rem; border-radius: 1rem; border: 1px solid currentColor; font-size: clamp(0.78rem, 2vw, 0.95rem); }
+.cipher-status.verified { color: var(--green); background: rgba(66, 255, 155, 0.08); }
+.cipher-status.purged { color: var(--amber); background: rgba(255, 184, 77, 0.08); }
+@keyframes scan { 0%, 100% { transform: translateY(-30%); } 50% { transform: translateY(280%); } }
+@keyframes purgeFlash { 0%, 100% { box-shadow: none; } 50% { box-shadow: 0 0 42px rgba(255, 184, 77, 0.62); } }
+@media (max-width: 680px) { .simulation-head { flex-direction: column; align-items: stretch; } .grid-stage { aspect-ratio: 1 / 1; min-height: 290px; } }

@@ -49,7 +49,7 @@ class TestWaitlistAPI:
         }
 
         create_response = api_client.post(f"{API_BASE}/waitlist", json=payload)
-        assert create_response.status_code == 200
+        assert create_response.status_code == 201
         created = create_response.json()
 
         assert created["name"] == payload["name"]
@@ -76,7 +76,7 @@ class TestWaitlistAPI:
         }
 
         first = api_client.post(f"{API_BASE}/waitlist", json=payload)
-        assert first.status_code == 200
+        assert first.status_code == 201
 
         second = api_client.post(f"{API_BASE}/waitlist", json=payload)
         assert second.status_code == 409

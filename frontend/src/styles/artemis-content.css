@@ -1,0 +1,30 @@
+.features-section, .waitlist-section { padding-bottom: 6rem; }
+.section-intro { max-width: 760px; margin-bottom: 2rem; }
+.feature-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.feature-card { min-height: 280px; border-radius: 1.6rem; padding: 1.45rem; position: relative; overflow: hidden; transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease; }
+.feature-card::after { content: ""; position: absolute; width: 12rem; height: 12rem; right: -6rem; top: -6rem; border-radius: 50%; background: rgba(66, 255, 155, 0.08); }
+.feature-card:hover { transform: translateY(-6px); border-color: rgba(66, 255, 155, 0.34); box-shadow: 0 28px 80px rgba(0, 0, 0, 0.48), 0 0 40px rgba(66, 255, 155, 0.1); }
+.feature-icon { color: var(--green); margin-bottom: 3rem; }
+.feature-card h3 { font-size: 1.5rem; line-height: 1; letter-spacing: -0.045em; }
+.feature-card p, .waitlist-copy p { color: var(--muted); line-height: 1.7; }
+.waitlist-section { display: grid; grid-template-columns: 0.82fr 1.18fr; gap: 1.2rem; align-items: start; }
+.waitlist-copy { position: sticky; top: 1rem; }
+.waitlist-grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 1rem; }
+.access-form, .admin-list { border-radius: 1.6rem; padding: 1.25rem; }
+.access-form { display: flex; flex-direction: column; gap: 0.8rem; }
+.access-form label { color: #d9fff0; font-size: 0.86rem; }
+.access-form input { width: 100%; min-height: 3.2rem; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 1rem; padding: 0 1rem; color: var(--white); background: rgba(0, 0, 0, 0.22); outline: none; transition: border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease; }
+.access-form input:focus { border-color: rgba(66, 255, 155, 0.62); background: rgba(4, 16, 13, 0.78); box-shadow: 0 0 0 4px rgba(66, 255, 155, 0.1); }
+.admin-list-head, .footer-bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.admin-list-head { margin-bottom: 0.9rem; }
+.admin-list-head span { color: var(--muted); }
+.admin-list-head strong { color: var(--green); font-size: 1.8rem; }
+.entry-list { display: grid; gap: 0.7rem; max-height: 330px; overflow: auto; padding-right: 0.2rem; }
+.entry-row, .empty-entry { border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 1rem; padding: 0.9rem; background: rgba(255, 255, 255, 0.035); }
+.entry-row { display: flex; justify-content: space-between; gap: 1rem; align-items: center; }
+.entry-row strong, .entry-row span { display: block; }
+.entry-row span, .entry-row small, .empty-entry { color: var(--muted); }
+.entry-row small { text-align: right; color: var(--green); }
+.footer-bar { padding: 2rem 0 2.5rem; color: var(--muted); border-top: 1px solid var(--line); }
+@media (max-width: 980px) { .waitlist-section, .waitlist-grid { grid-template-columns: 1fr; } .waitlist-copy { position: static; } .feature-grid { grid-template-columns: 1fr; } }
+@media (max-width: 680px) { .entry-row, .footer-bar { flex-direction: column; align-items: stretch; } .entry-row small { text-align: left; } }
