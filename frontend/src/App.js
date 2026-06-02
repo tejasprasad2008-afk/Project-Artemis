@@ -7,7 +7,9 @@ import { Toaster, toast } from "sonner";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const secureZone = { x: 36, y: 28, width: 32, height: 34 };
+const secureZone = { x: 47, y: 43, width: 7, height: 9 };
+const secureLogLine = "[SECURE] NIST ML-KEM Session Active // Streaming Lattice Math...";
+const alertLogLine = "[ALERT] Core Boundary Breach // Volatile RAM Purged";
 
 const features = [
   {
@@ -31,9 +33,11 @@ const telemetryRows = ["UWB-PULSE: 6.5GHz", "LATTICE: ML-KEM-768", "VAULT TTL: 0
 
 function SimulationWidget() {
   const panelRef = useRef(null);
-  const [node, setNode] = useState({ x: 52, y: 45 });
+  const wasInsideRef = useRef(true);
+  const [node, setNode] = useState({ x: 50.5, y: 47.5 });
   const [dragging, setDragging] = useState(false);
   const [flash, setFlash] = useState(false);
+  const [terminalLines, setTerminalLines] = useState([secureLogLine]);
 
   const isInside = useMemo(() => {
     return (
@@ -46,11 +50,34 @@ function SimulationWidget() {
 
   useEffect(() => {
     if (!isInside) {
-      setFlash(true);
-      const timer = setTimeout(() => setFlash(false), 420);
-      return () => clearTimeout(timer);
+      if (wasInsideRef.current) {
+        setTerminalLines([alertLogLine]);
+        setFlash(true);
+        const timer = setTimeout(() => setFlash(false), 520);
+        wasInsideRef.current = false;
+        return () => clearTimeout(timer);
+      }
+      return undefined;
     }
-  }, [isInside, node.x, node.y]);
+
+    if (!wasInsideRef.current) {
+      setTerminalLines([secureLogLine]);
+      wasInsideRef.current = true;
+    }
+
+    const stream = setInterval(() => {
+      setTerminalLines((lines) => [...lines.slice(-3), secureLogLine]);
+    }, 1450);
+
+    return () => clearInterval(stream);
+  }, [isInside]);
+
+  const clampCoordinate = (value) => Math.min(100, Math.max(0, Number.isFinite(value) ? value : 0));
+
+  const setCoordinate = (axis, value) => {
+    const nextValue = clampCoordinate(Number.parseFloat(value));
+    setNode((current) => ({ ...current, [axis]: nextValue }));
+  };
 
   const updateNode = (event) => {
     const bounds = panelRef.current?.getBoundingClientRect();
@@ -58,8 +85,8 @@ function SimulationWidget() {
     const clientX = event.clientX ?? event.touches?.[0]?.clientX;
     const clientY = event.clientY ?? event.touches?.[0]?.clientY;
     if (clientX === undefined || clientY === undefined) return;
-    const nextX = Math.min(96, Math.max(4, ((clientX - bounds.left) / bounds.width) * 100));
-    const nextY = Math.min(92, Math.max(8, ((clientY - bounds.top) / bounds.height) * 100));
+    const nextX = Math.min(98, Math.max(2, ((clientX - bounds.left) / bounds.width) * 100));
+    const nextY = Math.min(96, Math.max(4, ((clientY - bounds.top) / bounds.height) * 100));
     setNode({ x: nextX, y: nextY });
   };
 
@@ -78,44 +105,79 @@ function SimulationWidget() {
         </div>
       </div>
 
-      <div
-        ref={panelRef}
-        className={`grid-stage ${!isInside ? "danger" : ""}`}
-        data-testid="simulation-grid-canvas"
-        onMouseDown={(event) => {
-          setDragging(true);
-          updateNode(event);
-        }}
-        onMouseMove={(event) => dragging && updateNode(event)}
-        onMouseUp={() => setDragging(false)}
-        onMouseLeave={() => setDragging(false)}
-        onTouchStart={(event) => {
-          setDragging(true);
-          updateNode(event);
-        }}
-        onTouchMove={(event) => updateNode(event)}
-        onTouchEnd={() => setDragging(false)}
-      >
+      <div className="simulation-console-layout" data-testid="simulation-console-layout">
         <div
-          className="secure-box"
-          style={{ left: `${secureZone.x}%`, top: `${secureZone.y}%`, width: `${secureZone.width}%`, height: `${secureZone.height}%` }}
-          data-testid="simulation-secure-zone"
-        />
-        <div className="scanline" data-testid="simulation-scanline" />
-        <div className="node-trail" style={{ left: `${node.x}%`, top: `${node.y}%` }} data-testid="simulation-node-trail" />
-        <button
-          className={`drag-node ${isInside ? "inside" : "outside"}`}
-          style={{ left: `${node.x}%`, top: `${node.y}%` }}
-          data-testid="simulation-draggable-node"
-          aria-label="Drag proximity node"
-          type="button"
+          ref={panelRef}
+          className={`grid-stage ${!isInside ? "danger" : ""}`}
+          data-testid="simulation-grid-canvas"
+          onMouseDown={(event) => {
+            setDragging(true);
+            updateNode(event);
+          }}
+          onMouseMove={(event) => dragging && updateNode(event)}
+          onMouseUp={() => setDragging(false)}
+          onMouseLeave={() => setDragging(false)}
+          onTouchStart={(event) => {
+            setDragging(true);
+            updateNode(event);
+          }}
+          onTouchMove={(event) => updateNode(event)}
+          onTouchEnd={() => setDragging(false)}
         >
-          <span />
-        </button>
+          <div
+            className="secure-box"
+            style={{ left: `${secureZone.x}%`, top: `${secureZone.y}%`, width: `${secureZone.width}%`, height: `${secureZone.height}%` }}
+            data-testid="simulation-secure-zone"
+          />
+          <div className="scanline" data-testid="simulation-scanline" />
+          <div className="node-trail" style={{ left: `${node.x}%`, top: `${node.y}%` }} data-testid="simulation-node-trail" />
+          <button
+            className={`drag-node ${isInside ? "inside" : "outside"}`}
+            style={{ left: `${node.x}%`, top: `${node.y}%` }}
+            data-testid="simulation-draggable-node"
+            aria-label="Drag proximity node"
+            type="button"
+          >
+            <span />
+          </button>
+        </div>
+
+        <div className="coordinate-panel" data-testid="coordinate-panel">
+          <label htmlFor="x-coordinate" data-testid="x-coordinate-label">
+            X Coordinate
+            <input
+              id="x-coordinate"
+              type="number"
+              min="0"
+              max="100"
+              step="0.1"
+              value={node.x.toFixed(1)}
+              onChange={(event) => setCoordinate("x", event.target.value)}
+              data-testid="x-coordinate-input"
+            />
+          </label>
+          <label htmlFor="y-coordinate" data-testid="y-coordinate-label">
+            Y Coordinate
+            <input
+              id="y-coordinate"
+              type="number"
+              min="0"
+              max="100"
+              step="0.1"
+              value={node.y.toFixed(1)}
+              onChange={(event) => setCoordinate("y", event.target.value)}
+              data-testid="y-coordinate-input"
+            />
+          </label>
+        </div>
       </div>
 
-      <div className={`cipher-status ${isInside ? "verified" : "purged"}`} data-testid="simulation-status-message">
-        {isInside ? "UWB Position Verified // NIST ML-KEM Decrypted" : "Out of Bounds // Volatile Keys Purged"}
+      <div className={`terminal-log ${isInside ? "verified" : "breach"} ${flash ? "flash" : ""}`} data-testid="simulation-terminal-log">
+        {terminalLines.map((line, index) => (
+          <div key={`${line}-${index}`} data-testid={`terminal-log-line-${index}`}>
+            {line}
+          </div>
+        ))}
       </div>
     </section>
   );
