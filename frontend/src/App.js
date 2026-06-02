@@ -7,9 +7,8 @@ import { Toaster, toast } from "sonner";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const secureZone = { x: 47, y: 43, width: 7, height: 9 };
+const concealedSecureZone = { x: 49.2, y: 47.4, width: 2.7, height: 5.0 };
 const maskedLogLine = "[TRACE] Lattice telemetry sampling // Boundary classifier withheld...";
-const jitterLogLine = "[TRACE] Coordinate variance detected // Trust state masked...";
 
 const features = [
   {
@@ -33,44 +32,31 @@ const telemetryRows = ["UWB-PULSE: 6.5GHz", "LATTICE: ML-KEM-768", "VAULT TTL: 0
 
 function SimulationWidget() {
   const panelRef = useRef(null);
-  const wasInsideRef = useRef(true);
+  const concealedStateRef = useRef(false);
   const [node, setNode] = useState({ x: 50.5, y: 47.5 });
   const [dragging, setDragging] = useState(false);
-  const [flash, setFlash] = useState(false);
   const [terminalLines, setTerminalLines] = useState([maskedLogLine]);
 
-  const isInside = useMemo(() => {
+  const concealedZoneState = useMemo(() => {
     return (
-      node.x >= secureZone.x &&
-      node.x <= secureZone.x + secureZone.width &&
-      node.y >= secureZone.y &&
-      node.y <= secureZone.y + secureZone.height
+      node.x >= concealedSecureZone.x &&
+      node.x <= concealedSecureZone.x + concealedSecureZone.width &&
+      node.y >= concealedSecureZone.y &&
+      node.y <= concealedSecureZone.y + concealedSecureZone.height
     );
   }, [node]);
 
   useEffect(() => {
-    if (!isInside) {
-      if (wasInsideRef.current) {
-        setTerminalLines([jitterLogLine]);
-        setFlash(true);
-        const timer = setTimeout(() => setFlash(false), 520);
-        wasInsideRef.current = false;
-        return () => clearTimeout(timer);
-      }
-      return undefined;
-    }
+    concealedStateRef.current = concealedZoneState;
+  }, [concealedZoneState]);
 
-    if (!wasInsideRef.current) {
-      setTerminalLines([maskedLogLine]);
-      wasInsideRef.current = true;
-    }
-
+  useEffect(() => {
     const stream = setInterval(() => {
       setTerminalLines((lines) => [...lines.slice(-3), maskedLogLine]);
     }, 1450);
 
     return () => clearInterval(stream);
-  }, [isInside]);
+  }, []);
 
   const clampCoordinate = (value) => Math.min(100, Math.max(0, Number.isFinite(value) ? value : 0));
 
@@ -97,7 +83,7 @@ function SimulationWidget() {
           <p className="eyebrow" data-testid="simulation-eyebrow">Live proximity simulation</p>
           <h2 data-testid="simulation-title">Drag the access node through the vault grid.</h2>
         </div>
-        <div className={`state-pill masked ${flash ? "flash" : ""}`} data-testid="simulation-state-pill">
+        <div className="state-pill masked" data-testid="simulation-state-pill">
           STATE MASKED
         </div>
       </div>
@@ -121,11 +107,6 @@ function SimulationWidget() {
           onTouchMove={(event) => updateNode(event)}
           onTouchEnd={() => setDragging(false)}
         >
-          <div
-            className="secure-box"
-            style={{ left: `${secureZone.x}%`, top: `${secureZone.y}%`, width: `${secureZone.width}%`, height: `${secureZone.height}%` }}
-            data-testid="simulation-secure-zone"
-          />
           <div className="scanline" data-testid="simulation-scanline" />
           <div className="node-trail" style={{ left: `${node.x}%`, top: `${node.y}%` }} data-testid="simulation-node-trail" />
           <button
@@ -169,7 +150,7 @@ function SimulationWidget() {
         </div>
       </div>
 
-      <div className={`terminal-log masked ${flash ? "flash" : ""}`} data-testid="simulation-terminal-log">
+      <div className="terminal-log masked" data-testid="simulation-terminal-log">
         {terminalLines.map((line, index) => (
           <div key={`${line}-${index}`} data-testid={`terminal-log-line-${index}`}>
             {line}

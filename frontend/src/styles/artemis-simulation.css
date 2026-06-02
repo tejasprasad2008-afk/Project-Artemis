@@ -9,7 +9,7 @@
 .simulation-console-layout { display: grid; grid-template-columns: minmax(0, 1fr) 220px; gap: 1rem; align-items: stretch; }
 .grid-stage { position: relative; width: 100%; aspect-ratio: 16 / 8.6; min-height: 560px; overflow: hidden; border-radius: 1.4rem; border: 1px solid rgba(66, 255, 155, 0.14); cursor: crosshair; touch-action: none; background: linear-gradient(rgba(66, 255, 155, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(66, 255, 155, 0.08) 1px, transparent 1px), radial-gradient(circle at center, rgba(66, 255, 155, 0.12), transparent 42%), rgba(2, 8, 7, 0.92); background-size: 30px 30px, 30px 30px, auto, auto; transition: border-color 180ms ease, box-shadow 180ms ease; }
 .grid-stage.danger { border-color: rgba(66, 255, 155, 0.14); box-shadow: none; }
-.secure-box { position: absolute; border: 1px solid rgba(66, 255, 155, 0.8); border-radius: 0.4rem; background: repeating-linear-gradient(135deg, rgba(66, 255, 155, 0.1), rgba(66, 255, 155, 0.1) 8px, transparent 8px, transparent 18px); box-shadow: 0 0 34px rgba(66, 255, 155, 0.16), inset 0 0 28px rgba(66, 255, 155, 0.08); }
+.secure-box { display: none; }
 .scanline { position: absolute; inset: 0; background: linear-gradient(180deg, transparent, rgba(66, 255, 155, 0.16), transparent); height: 28%; animation: scan 4.5s ease-in-out infinite; }
 .node-trail, .drag-node { position: absolute; transform: translate(-50%, -50%); }
 .node-trail { width: 8rem; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, rgba(66, 255, 155, 0.2), transparent 65%); pointer-events: none; }
@@ -26,8 +26,8 @@
 .terminal-log { min-height: 6.25rem; margin-top: 0.9rem; padding: 0.9rem 1rem; border-radius: 1rem; border: 1px solid rgba(66, 255, 155, 0.18); background: rgba(0, 0, 0, 0.48); color: var(--green); font-family: "IBM Plex Mono", monospace; font-size: clamp(0.72rem, 1.5vw, 0.88rem); line-height: 1.55; overflow: hidden; box-shadow: inset 0 0 26px rgba(66, 255, 155, 0.05); }
 .terminal-log div { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0.86; }
 .terminal-log.masked { color: #d7fff0; border-color: rgba(215, 255, 240, 0.2); }
-.terminal-log.breach { color: #ff4f57; border-color: rgba(255, 79, 87, 0.54); box-shadow: inset 0 0 28px rgba(255, 79, 87, 0.08), 0 0 34px rgba(255, 79, 87, 0.12); }
-.terminal-log.flash { animation: terminalAlert 520ms ease; }
+.terminal-log.breach { color: #d7fff0; border-color: rgba(215, 255, 240, 0.2); box-shadow: inset 0 0 26px rgba(66, 255, 155, 0.05); }
+.terminal-log.flash { animation: none; }
 @keyframes scan { 0%, 100% { transform: translateY(-30%); } 50% { transform: translateY(280%); } }
 @keyframes purgeFlash { 0%, 100% { box-shadow: none; } 50% { box-shadow: 0 0 42px rgba(255, 79, 87, 0.62); } }
 @keyframes terminalAlert { 0%, 100% { background: rgba(0, 0, 0, 0.48); } 45% { background: rgba(255, 79, 87, 0.18); } }

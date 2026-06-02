@@ -17,6 +17,8 @@ Build a premium, high-tech SaaS landing page for a project called ‘Project Art
 
 7. Follow-up enhancement: Mask simulation state labels and visual color changes so visitors must infer whether the node is secured.
 
+8. Follow-up enhancement: Make the secure zone a concealed one-grid-unit internal hitbox with no visible boundary or terminal state reveal.
+
 ## User Choices
 - Waitlist signups are stored in MongoDB and displayed in an admin-style access queue on the page.
 - Simulation node starts inside the secure zone with green verified state.
@@ -31,7 +33,7 @@ Build a premium, high-tech SaaS landing page for a project called ‘Project Art
 ## Implemented
 - Premium dark cyberpunk SaaS landing page for Project Artemis.
 - Hero with Aegis Proximity Vault messaging and Launch Console CTA.
-- Interactive enlarged draggable radar grid with a smaller secure zone, synced X/Y coordinate inputs, masked node styling, and terminal telemetry that does not reveal secure/purged state.
+- Interactive enlarged draggable radar grid with a concealed one-grid-unit secure zone, synced X/Y coordinate inputs, masked node styling, and terminal telemetry that does not reveal secure/purged state or zone location.
 - Features grid covering UWB spatial tracking, automated key burning, and zero-trust containment.
 - Waitlist form with name, firm/company, email, database persistence, duplicate email handling, toasts, and admin-style list.
 - Backend regression tests added for waitlist API.
@@ -43,7 +45,7 @@ Build a premium, high-tech SaaS landing page for a project called ‘Project Art
 - Browser flow tested: hero load, CTA navigation, simulation state, waitlist update.
 - Testing agent completed backend + frontend validation with 100% pass rate.
 - Firm/company field self-tested through API and browser form submission; queue shows submitted company.
-- Simulation redesign self-tested in browser: coordinate typing moves the node, dragging updates coordinates, secure stream appears, and breach clears to red alert.
+- Simulation redesign self-tested in browser: coordinate typing moves the node, dragging updates coordinates, and the zone remains visually concealed with masked telemetry.
 
 ## Backlog
 ### P0
