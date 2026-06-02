@@ -40,6 +40,7 @@ class StatusCheckCreate(BaseModel):
 
 class WaitlistCreate(BaseModel):
     name: str = Field(..., min_length=2, max_length=120)
+    firm: str = Field(..., min_length=2, max_length=160)
     email: EmailStr
 
 
@@ -48,6 +49,7 @@ class WaitlistEntry(BaseModel):
 
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     name: str
+    firm: str = "Undisclosed firm"
     email: EmailStr
     segment: str = "Local wealth / law office sandbox"
     access_tier: str = "Sandboxed early access"
@@ -63,12 +65,13 @@ async def root():
 async def create_waitlist_entry(input: WaitlistCreate):
     clean_email = input.email.lower().strip()
     clean_name = " ".join(input.name.strip().split())
+    clean_firm = " ".join(input.firm.strip().split())
 
     existing = await db.waitlist_entries.find_one({"email": clean_email}, {"_id": 0})
     if existing:
         raise HTTPException(status_code=409, detail="This email is already on the Artemis sandbox list.")
 
-    entry = WaitlistEntry(name=clean_name, email=clean_email)
+    entry = WaitlistEntry(name=clean_name, firm=clean_firm, email=clean_email)
     doc = entry.model_dump()
     await db.waitlist_entries.insert_one(doc)
     return entry

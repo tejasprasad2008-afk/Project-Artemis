@@ -45,6 +45,7 @@ class TestWaitlistAPI:
         suffix = uuid.uuid4().hex[:10]
         payload = {
             "name": f"TEST_Artemis {suffix}",
+            "firm": f"TEST Firm {suffix}",
             "email": f"test.artemis.{suffix}@example.com",
         }
 
@@ -53,6 +54,7 @@ class TestWaitlistAPI:
         created = create_response.json()
 
         assert created["name"] == payload["name"]
+        assert created["firm"] == payload["firm"]
         assert created["email"] == payload["email"]
         assert created["segment"] == "Local wealth / law office sandbox"
         assert created["access_tier"] == "Sandboxed early access"
@@ -67,11 +69,13 @@ class TestWaitlistAPI:
         match = [e for e in entries if e["email"] == payload["email"]]
         assert len(match) == 1
         assert match[0]["name"] == payload["name"]
+        assert match[0]["firm"] == payload["firm"]
 
     def test_duplicate_email_rejected_with_useful_error(self, api_client):
         suffix = uuid.uuid4().hex[:10]
         payload = {
             "name": f"TEST_Duplicate {suffix}",
+            "firm": f"TEST Duplicate Firm {suffix}",
             "email": f"test.dup.{suffix}@example.com",
         }
 

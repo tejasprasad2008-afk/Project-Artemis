@@ -123,7 +123,7 @@ function SimulationWidget() {
 
 function WaitlistPanel() {
   const [entries, setEntries] = useState([]);
-  const [form, setForm] = useState({ name: "", email: "" });
+  const [form, setForm] = useState({ name: "", firm: "", email: "" });
   const [loading, setLoading] = useState(false);
 
   const fetchEntries = async () => {
@@ -141,7 +141,7 @@ function WaitlistPanel() {
     try {
       await axios.post(`${API}/waitlist`, form);
       toast.success("Sandbox access request secured.");
-      setForm({ name: "", email: "" });
+      setForm({ name: "", firm: "", email: "" });
       await fetchEntries();
     } catch (error) {
       const message = error.response?.data?.detail || "Unable to register this access request.";
@@ -172,6 +172,15 @@ function WaitlistPanel() {
             placeholder="Avery Sterling"
             required
           />
+          <label htmlFor="firm" data-testid="waitlist-firm-label">Firm / company</label>
+          <input
+            id="firm"
+            data-testid="waitlist-firm-input"
+            value={form.firm}
+            onChange={(event) => setForm({ ...form, firm: event.target.value })}
+            placeholder="Sterling Capital Counsel"
+            required
+          />
           <label htmlFor="email" data-testid="waitlist-email-label">Work email</label>
           <input
             id="email"
@@ -200,6 +209,7 @@ function WaitlistPanel() {
                 <div className="entry-row" key={entry.id} data-testid={`waitlist-entry-${entry.id}`}>
                   <div>
                     <strong data-testid={`waitlist-entry-name-${entry.id}`}>{entry.name}</strong>
+                    <span className="entry-firm" data-testid={`waitlist-entry-firm-${entry.id}`}><Building2 size={13} /> {entry.firm}</span>
                     <span data-testid={`waitlist-entry-email-${entry.id}`}>{entry.email}</span>
                   </div>
                   <small data-testid={`waitlist-entry-tier-${entry.id}`}>{entry.access_tier}</small>

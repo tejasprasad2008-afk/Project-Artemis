@@ -11,6 +11,8 @@ Build a premium, high-tech SaaS landing page for a project called ‘Project Art
 
 4. Waitlist Form: A clean input form for local wealth firms and law offices to register for early sandboxed access, capturing names and emails.
 
+5. Follow-up enhancement: Add firm/company field to the waitlist flow.
+
 ## User Choices
 - Waitlist signups are stored in MongoDB and displayed in an admin-style access queue on the page.
 - Simulation node starts inside the secure zone with green verified state.
@@ -27,7 +29,7 @@ Build a premium, high-tech SaaS landing page for a project called ‘Project Art
 - Hero with Aegis Proximity Vault messaging and Launch Console CTA.
 - Interactive draggable grid simulation with secure/purged state changes.
 - Features grid covering UWB spatial tracking, automated key burning, and zero-trust containment.
-- Waitlist form with database persistence, duplicate email handling, toasts, and admin-style list.
+- Waitlist form with name, firm/company, email, database persistence, duplicate email handling, toasts, and admin-style list.
 - Backend regression tests added for waitlist API.
 
 ## Testing Summary
@@ -36,6 +38,7 @@ Build a premium, high-tech SaaS landing page for a project called ‘Project Art
 - Backend API tested via external app URL: root, create waitlist, list waitlist, duplicate handling.
 - Browser flow tested: hero load, CTA navigation, simulation state, waitlist update.
 - Testing agent completed backend + frontend validation with 100% pass rate.
+- Firm/company field self-tested through API and browser form submission; queue shows submitted company.
 
 ## Backlog
 ### P0
@@ -43,7 +46,7 @@ Build a premium, high-tech SaaS landing page for a project called ‘Project Art
 
 ### P1
 - Add lightweight admin filtering/search for the access queue.
-- Add firm type/company field to waitlist entries.
+- Add firm type/category selection for wealth firm vs law office segmentation.
 
 ### P2
 - Add animated security proof metrics or customer-segment trust badges.
