@@ -3,8 +3,7 @@
     "frontend": {
       "root": "frontend",
       "framework": "create-react-app",
-      "buildCommand": "yarn build",
-      "outputDirectory": "build"
+      "buildCommand": "yarn build"
     },
     "backend": {
       "root": "backend",
