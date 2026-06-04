@@ -1,0 +1,14 @@
+{
+  "experimentalServices": {
+    "frontend": {
+      "root": "frontend",
+      "framework": "create-react-app",
+      "buildCommand": "yarn build",
+      "outputDirectory": "build"
+    },
+    "backend": {
+      "root": "backend",
+      "runtime": "python3.11"
+    }
+  }
+}
