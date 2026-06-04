@@ -3,11 +3,13 @@
     "frontend": {
       "root": "frontend",
       "framework": "create-react-app",
-      "buildCommand": "yarn build"
+      "buildCommand": "yarn build",
+      "mount": "/"
     },
     "backend": {
       "root": "backend",
-      "runtime": "python3.11"
+      "runtime": "python3.11",
+      "routePrefix": "/api"
     }
   }
 }
