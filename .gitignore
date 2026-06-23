@@ -38,6 +38,11 @@ dist
 backend/.env
 frontend/.env
 
+# Internal Logs and Research
+memory/
+test_reports/
+test_result.md
+
 # Logs and debug files
 npm-debug.log*
 yarn-debug.log*
