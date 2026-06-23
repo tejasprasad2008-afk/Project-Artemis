@@ -14,6 +14,7 @@ from backend.security.entropy import EntropyAnomalyDetector, EntropyThresholds
 from backend.security.chunks import ChunkAttestor, QuorumValidator
 from backend.security.cascade import CascadeMLKEM
 from backend.security.siem import SIEMLogger, EventType
+from backend.security.uwb_proxy import UWBProxyClient
 
 import sys
 from guard import SecurityConfig
@@ -45,6 +46,7 @@ cascade = CascadeMLKEM(
     chunk_attestor=chunk_attestor,
     quorum_validator=quorum_validator,
 )
+uwb_proxy = UWBProxyClient()
 
 
 # Define Models
@@ -170,8 +172,7 @@ async def verify_position(body: VerifyPositionRequest, request: Request):
     timestamps = [s.t for s in body.positions]
     source_ip = request.client.host if request.client else None
 
-    detector = EntropyAnomalyDetector()
-    result = detector.analyze(positions, timestamps)
+    result = uwb_proxy.verify_position(positions, timestamps)
 
     event_type = (
         EventType.POSITION_VERIFIED

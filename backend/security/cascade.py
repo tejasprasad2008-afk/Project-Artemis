@@ -40,6 +40,7 @@ from backend.security.entropy import (
 )
 from backend.security.chunks import ChunkAttestor, PositionChunk, QuorumValidator
 from backend.security.siem import EventType, SIEMLogger, Severity
+from backend.security.uwb_proxy import UWBProxyClient
 
 
 class CascadeFailureReason(str, Enum):
@@ -143,6 +144,7 @@ class CascadeMLKEM:
     ) -> None:
         self._siem = siem or SIEMLogger()
         self._detector = EntropyAnomalyDetector(entropy_thresholds)
+        self._uwb_proxy = UWBProxyClient()
         self._attestor = chunk_attestor or ChunkAttestor()
         self._quorum = quorum_validator or QuorumValidator()
         self._allowed_roles = allowed_roles or {"operator", "admin"}
@@ -199,7 +201,7 @@ class CascadeMLKEM:
         # ------------------------------------------------------------------
         # Layer 1 — Entropy gate
         # ------------------------------------------------------------------
-        entropy_result = self._detector.analyze(positions, timestamps)
+        entropy_result = self._uwb_proxy.verify_position(positions, timestamps)
 
         if entropy_result.anomaly != AnomalyType.GENUINE:
             event_type = (
