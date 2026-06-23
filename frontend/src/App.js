@@ -448,10 +448,10 @@ function SimulationWidget() {
 }
 
 const mockProvisioned = [
-  { id: "mock-1", name: "Avery Sterling", firm: "Sterling Capital Counsel", email: "avery@sterling.example", access_tier: "PROVISIONED" },
-  { id: "mock-2", name: "David Vance", firm: "Vanguard Trust Group", email: "vance@vanguard.example", access_tier: "PROVISIONED" },
-  { id: "mock-3", name: "Sarah Hale", firm: "Hale & Dorr LLP", email: "hale@haledorr.example", access_tier: "PROVISIONED" },
-  { id: "mock-4", name: "Marcus Ross", firm: "Apex Legal Advisors", email: "ross@apexlegal.example", access_tier: "PROVISIONED" },
+  { id: "mock-1", access_tier: "PROVISIONED" },
+  { id: "mock-2", access_tier: "PROVISIONED" },
+  { id: "mock-3", access_tier: "PROVISIONED" },
+  { id: "mock-4", access_tier: "PROVISIONED" },
 ];
 
 function WaitlistPanel() {
@@ -548,12 +548,11 @@ function WaitlistPanel() {
             <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--green)', margin: '0.4rem 0 0.4rem', fontFamily: 'monospace', fontWeight: 600 }}>
               Active Enclaves (Batch 1)
             </div>
-            {mockProvisioned.map((entry) => (
+            {mockProvisioned.map((entry, idx) => (
               <div className="entry-row" key={entry.id} data-testid={`waitlist-entry-${entry.id}`} style={{ borderLeft: '3px solid var(--green)', paddingLeft: '0.75rem' }}>
                 <div>
-                  <strong data-testid={`waitlist-entry-name-${entry.id}`} style={{ fontSize: '0.9rem' }}>{entry.name}</strong>
-                  <span className="entry-firm" data-testid={`waitlist-entry-firm-${entry.id}`}><Building2 size={13} /> {entry.firm}</span>
-                  <span data-testid={`waitlist-entry-email-${entry.id}`} style={{ fontSize: '0.78rem' }}>{entry.email}</span>
+                  <strong data-testid={`waitlist-entry-name-${entry.id}`} style={{ fontSize: '0.9rem' }}>Provisioned Enclave {idx + 1}</strong>
+                  <span className="entry-firm" data-testid={`waitlist-entry-firm-${entry.id}`}><Building2 size={13} /> Confidential Firm</span>
                 </div>
                 <small data-testid={`waitlist-entry-tier-${entry.id}`} style={{ fontSize: '0.7rem', color: 'var(--green)', textTransform: 'uppercase', background: 'rgba(66, 255, 155, 0.08)', padding: '0.2rem 0.4rem', borderRadius: '4px', border: '1px solid rgba(66, 255, 155, 0.15)' }}>
                   {entry.access_tier}
@@ -570,15 +569,14 @@ function WaitlistPanel() {
                 No pending applications. Applications open for Batch 2.
               </div>
             ) : (
-              entries.map((entry) => (
+              entries.map((entry, idx) => (
                 <div className="entry-row" key={entry.id} data-testid={`waitlist-entry-${entry.id}`} style={{ borderLeft: '3px solid #ffb84d', paddingLeft: '0.75rem' }}>
                   <div>
-                    <strong data-testid={`waitlist-entry-name-${entry.id}`} style={{ fontSize: '0.9rem' }}>{entry.name}</strong>
-                    <span className="entry-firm" data-testid={`waitlist-entry-firm-${entry.id}`}><Building2 size={13} /> {entry.firm}</span>
-                    <span data-testid={`waitlist-entry-email-${entry.id}`} style={{ fontSize: '0.78rem' }}>{entry.email}</span>
+                    <strong data-testid={`waitlist-entry-name-${entry.id}`} style={{ fontSize: '0.9rem' }}>Pending Applicant</strong>
+                    <span className="entry-firm" data-testid={`waitlist-entry-firm-${entry.id}`}><Building2 size={13} /> Identity Redacted</span>
                   </div>
                   <small data-testid={`waitlist-entry-tier-${entry.id}`} style={{ fontSize: '0.7rem', color: '#ffb84d', textTransform: 'uppercase', background: 'rgba(255, 184, 77, 0.08)', padding: '0.2rem 0.4rem', borderRadius: '4px', border: '1px solid rgba(255, 184, 77, 0.15)' }}>
-                    {entry.access_tier || "PENDING"}
+                    {entry.access_tier || "EVALUATING"}
                   </small>
                 </div>
               ))
