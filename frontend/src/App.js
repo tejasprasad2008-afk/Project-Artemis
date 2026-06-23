@@ -502,7 +502,7 @@ function WaitlistPanel() {
             data-testid="waitlist-name-input"
             value={form.name}
             onChange={(event) => setForm({ ...form, name: event.target.value })}
-            placeholder="Avery Sterling"
+            placeholder="John Doe"
             required
           />
           <label htmlFor="firm" data-testid="waitlist-firm-label">Firm / company</label>
@@ -511,7 +511,7 @@ function WaitlistPanel() {
             data-testid="waitlist-firm-input"
             value={form.firm}
             onChange={(event) => setForm({ ...form, firm: event.target.value })}
-            placeholder="Sterling Capital Counsel"
+            placeholder="Example Firm Name"
             required
           />
           <label htmlFor="email" data-testid="waitlist-email-label">Work email</label>
