@@ -50,7 +50,7 @@ The middleware is configured to automatically block known scanners like `sqlmap`
 curl -H "User-Agent: sqlmap" http://localhost:8000/api/waitlist
 ```
 **Expected Response:**
-`430 Banned` / Access denied (since `sqlmap` is in the blocked user-agents list).
+`403 Forbidden` / `User-Agent not allowed` (since `sqlmap` is in the blocked user-agents list).
 
 ### Test B: Rate Limiting and Auto-Banning
 The middleware limits requests to **100 requests per minute** per IP and automatically bans an IP after **5 failed requests** (e.g., triggering invalid status codes).
