@@ -534,13 +534,6 @@ function WaitlistPanel() {
             <span data-testid="waitlist-admin-title" style={{ fontSize: '0.82rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--muted)' }}>
               Sandbox Enrollment Status
             </span>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', width: '100%' }}>
-              <strong data-testid="waitlist-count" style={{ fontSize: '1.6rem', color: 'var(--green)', lineHeight: 1 }}>14/20</strong>
-              <span style={{ fontSize: '0.82rem', color: 'var(--muted)', fontWeight: 500 }}>Firms Provisioned (Batch 1)</span>
-            </div>
-            <div style={{ fontSize: '0.78rem', color: '#ffb84d', fontFamily: 'monospace', marginTop: '0.2rem' }}>
-              * Applications open for Batch 2
-            </div>
           </div>
           
           <div className="entry-list" data-testid="waitlist-entry-list">
