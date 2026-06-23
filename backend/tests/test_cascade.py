@@ -10,11 +10,16 @@ Validates that:
 """
 
 import math
+import os
 import random
 import time
 from typing import List, Tuple
 
 import pytest
+
+# Set required env vars BEFORE importing modules that read them at init time
+os.environ.setdefault("UWB_SECRET_KEY", "test-uwb-secret-key-for-pytest-only")
+os.environ.setdefault("ARTEMIS_ADMIN_KEY", "test-admin-key-for-pytest-only")
 
 from backend.security.cascade import (
     CascadeFailureReason,

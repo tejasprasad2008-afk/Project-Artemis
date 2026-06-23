@@ -1,9 +1,11 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Request
+from fastapi import FastAPI, APIRouter, HTTPException, Request, Security
+from fastapi.security import APIKeyHeader
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
+import secrets
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict, EmailStr
 from typing import Any, Dict, List, Optional, Tuple
@@ -28,6 +30,28 @@ load_dotenv(ROOT_DIR / '.env')
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
+
+# ---------------------------------------------------------------------------
+# Admin API key — used to protect internal/SIEM endpoints.
+# Set ARTEMIS_ADMIN_KEY in env; a random key is generated for dev if absent.
+# ---------------------------------------------------------------------------
+_admin_key_header = APIKeyHeader(name="X-Artemis-Admin-Key", auto_error=False)
+_ADMIN_KEY: str = os.environ.get("ARTEMIS_ADMIN_KEY") or secrets.token_hex(32)
+if not os.environ.get("ARTEMIS_ADMIN_KEY"):
+    logging.getLogger(__name__).warning(
+        "ARTEMIS_ADMIN_KEY not set — generated ephemeral key for this session: %s",
+        _ADMIN_KEY,
+    )
+
+
+async def _require_admin_key(api_key: Optional[str] = Security(_admin_key_header)) -> str:
+    """FastAPI dependency that enforces the admin API key."""
+    if not api_key or not secrets.compare_digest(api_key, _ADMIN_KEY):
+        raise HTTPException(
+            status_code=403,
+            detail="Forbidden: valid X-Artemis-Admin-Key required",
+        )
+    return api_key
 
 # Create the main app without a prefix
 app = FastAPI()
@@ -256,8 +280,9 @@ async def decrypt_vault(body: DecryptRequest, request: Request):
 async def get_security_events(
     count: int = 50,
     severity: Optional[str] = None,
+    _key: str = Security(_require_admin_key),
 ):
-    """Retrieve recent security events for the threat dashboard."""
+    """Retrieve recent security events for the threat dashboard (admin only)."""
     from backend.security.siem import Severity
 
     severity_filter = None
@@ -274,19 +299,36 @@ async def get_security_events(
 
 
 @api_router.get("/security/summary")
-async def get_security_summary():
-    """Threat summary dashboard data."""
+async def get_security_summary(
+    _key: str = Security(_require_admin_key),
+):
+    """Threat summary dashboard data (admin only)."""
     return siem_logger.get_threat_summary()
 
 
 app.include_router(api_router)
 
+# ---------------------------------------------------------------------------
+# CORS — wildcard origin + allow_credentials=True is a security misconfiguration.
+# When credentials are included (cookies/auth headers), origins must be explicit.
+# ---------------------------------------------------------------------------
+_raw_cors = os.environ.get('CORS_ORIGINS', 'http://localhost:3000')
+_cors_origins = [o.strip() for o in _raw_cors.split(',') if o.strip()]
+if '*' in _cors_origins:
+    # Wildcard with credentials is spec-forbidden and exploitable — fall back to
+    # localhost only and log a warning so this is visible at startup.
+    logging.getLogger(__name__).warning(
+        "CORS_ORIGINS=* with allow_credentials=True is a security misconfiguration. "
+        "Restricting to http://localhost:3000. Set CORS_ORIGINS to your production domain."
+    )
+    _cors_origins = ['http://localhost:3000']
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=_cors_origins,
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization", "X-Artemis-Admin-Key"],
 )
 
 # Initialize fastapi-guard middleware
