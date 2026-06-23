@@ -143,8 +143,8 @@ function SimulationWidget() {
       }
     }
 
-    const isNearBorder = node.x < 15 || node.x > 85 || node.y < 12 || node.y > 88;
-    const isOut = node.x <= 3.5 || node.x >= 96.5 || node.y <= 3.5 || node.y >= 96.5;
+    const isNearBorder = node.x < 20 || node.x > 80 || node.y < 20 || node.y > 80;
+    const isOut = node.x <= 10 || node.x >= 90 || node.y <= 10 || node.y >= 90;
 
     let threatLevel = "LOW";
     if (isOut) {
@@ -190,7 +190,7 @@ function SimulationWidget() {
         return;
       }
 
-      const isNearBorder = node.x < 15 || node.x > 85 || node.y < 12 || node.y > 88;
+      const isNearBorder = node.x < 20 || node.x > 80 || node.y < 20 || node.y > 80;
       const insideSecure =
         node.x >= concealedSecureZone.x &&
         node.x <= concealedSecureZone.x + concealedSecureZone.width &&
@@ -253,7 +253,7 @@ function SimulationWidget() {
     setNode({ x: nextX, y: nextY });
   };
 
-  const isNear = node.x < 15 || node.x > 85 || node.y < 12 || node.y > 88;
+  const isNear = node.x < 20 || node.x > 80 || node.y < 20 || node.y > 80;
   const cardClass = `simulation-card reveal reveal-delay-2 ${purged ? "purged" : isNear ? "warning" : ""}`;
   const pillText = purged
     ? "KEYS PURGED // BREACHED"
