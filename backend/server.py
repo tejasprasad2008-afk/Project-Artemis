@@ -15,6 +15,10 @@ from backend.security.chunks import ChunkAttestor, QuorumValidator
 from backend.security.cascade import CascadeMLKEM
 from backend.security.siem import SIEMLogger, EventType
 
+import sys
+from guard import SecurityConfig
+from guard.middleware import SecurityMiddleware
+
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -283,6 +287,20 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Initialize fastapi-guard middleware
+is_testing = "pytest" in sys.modules
+guard_config = SecurityConfig(
+    enable_rate_limiting=not is_testing,
+    rate_limit=100,             # 100 requests per minute
+    rate_limit_window=60,
+    enable_ip_banning=not is_testing,
+    auto_ban_threshold=5,
+    blocked_user_agents=["sqlmap", "nikto"],
+    exclude_paths=["/", "/api/", "/api/status"],
+)
+
+app.add_middleware(SecurityMiddleware, config=guard_config)
 
 # Configure logging
 logging.basicConfig(
