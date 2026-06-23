@@ -297,7 +297,7 @@ guard_config = SecurityConfig(
     enable_ip_banning=not is_testing,
     auto_ban_threshold=5,
     blocked_user_agents=["sqlmap", "nikto"],
-    exclude_paths=["/", "/api/", "/api/status"],
+    exclude_paths=["/api/status"],
 )
 
 app.add_middleware(SecurityMiddleware, config=guard_config)
