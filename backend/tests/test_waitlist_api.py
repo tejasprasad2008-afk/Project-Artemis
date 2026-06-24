@@ -11,14 +11,14 @@ import requests
 def _read_backend_url_from_frontend_env() -> str:
     env_path = Path("/app/frontend/.env")
     if not env_path.exists():
-        pytest.skip("frontend/.env missing; cannot resolve REACT_APP_BACKEND_URL")
+        pytest.skip("frontend/.env missing; cannot resolve REACT_APP_BACKEND_URL", allow_module_level=True)
 
     for line in env_path.read_text().splitlines():
         if line.startswith("REACT_APP_BACKEND_URL="):
             value = line.split("=", 1)[1].strip().strip('"').strip("'")
             if value:
                 return value.rstrip("/")
-    pytest.skip("REACT_APP_BACKEND_URL not found in frontend/.env")
+    pytest.skip("REACT_APP_BACKEND_URL not found in frontend/.env", allow_module_level=True)
 
 
 BASE_URL = os.environ.get("REACT_APP_BACKEND_URL") or _read_backend_url_from_frontend_env()
