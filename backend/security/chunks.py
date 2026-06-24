@@ -140,7 +140,7 @@ class ChunkAttestor:
         ).hexdigest()[:16]
 
         is_valid = all(flags)
-        pos_tuple = tuple(tuple(p) for p in positions)
+        pos_tuple = tuple(tuple(p) for p in positions)  # type: ignore
         ts_tuple = tuple(timestamps)
 
         attestation = self._compute_hmac(

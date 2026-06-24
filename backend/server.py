@@ -8,11 +8,11 @@ import logging
 import secrets
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict, EmailStr
-from typing import Any, Dict, List, Optional, Tuple
+from typing import List, Optional
 import uuid
 from datetime import datetime, timezone
+import resend
 
-from backend.security.entropy import EntropyAnomalyDetector, EntropyThresholds
 from backend.security.chunks import ChunkAttestor, QuorumValidator
 from backend.security.cascade import CascadeMLKEM
 from backend.security.siem import SIEMLogger, EventType
@@ -25,6 +25,9 @@ from guard.middleware import SecurityMiddleware
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
+
+# Resend API Key
+resend.api_key = os.environ.get("RESEND_API_KEY")
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
@@ -138,18 +141,40 @@ async def create_waitlist_entry(input: WaitlistCreate):
     clean_name = " ".join(input.name.strip().split())
     clean_firm = " ".join(input.firm.strip().split())
 
-    existing = await db.waitlist_entries.find_one({"email": clean_email}, {"_id": 0})
+    existing = await db.waitlist_entries.find_one({"email": clean_email}, {"_id": 0})  # type: ignore
     if existing:
         raise HTTPException(status_code=409, detail="This email is already on the Artemis sandbox list.")
 
     entry = WaitlistEntry(name=clean_name, firm=clean_firm, email=clean_email)
     doc = entry.model_dump()
     await db.waitlist_entries.insert_one(doc)
+
+    # Send emails via Resend if API key is configured
+    if resend.api_key:
+        try:
+            resend.Emails.send({
+                "from": "Project Artemis <onboarding@resend.dev>",
+                "to": [clean_email],
+                "subject": "Waitlist Confirmation - Project Artemis",
+                "html": f"<p>Hi {clean_name},</p><p>Your request for sandbox access on behalf of <strong>{clean_firm}</strong> has been secured.</p><p>We will notify you when your evaluation period begins.</p><br><p>Best regards,<br>The Artemis Team</p>"
+            })
+        except Exception as e:
+            logging.getLogger(__name__).warning("Failed to send waitlist confirmation email: %s", str(e))
+        try:
+            resend.Emails.send({
+                "from": "Project Artemis <onboarding@resend.dev>",
+                "to": ["artemiscorpofficial@gmail.com"],
+                "subject": f"New Waitlist Signup: {clean_name} ({clean_firm})",
+                "html": f"<p>A new signup just came in:</p><ul><li><strong>Name:</strong> {clean_name}</li><li><strong>Firm:</strong> {clean_firm}</li><li><strong>Email:</strong> {clean_email}</li></ul>"
+            })
+        except Exception as e:
+            logging.getLogger(__name__).warning("Failed to send internal waitlist notification: %s", str(e))
+
     return entry
 
 
 @api_router.get("/waitlist", response_model=List[WaitlistEntry])
-async def get_waitlist_entries():
+async def get_waitlist_entries(_: str = Security(_require_admin_key)):
     entries = await db.waitlist_entries.find({}, {"_id": 0}).sort("created_at", -1).to_list(100)
     return entries
 
