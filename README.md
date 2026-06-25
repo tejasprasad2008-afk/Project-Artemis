@@ -2,6 +2,8 @@
 
 A sophisticated physical-proximity-gated cryptographic vault demonstration that combines ultra-wideband (UWB) positioning with advanced multi-layer machine learning based encryption. Project Artemis showcases a production-grade security architecture for location-dependent access control.
 
+**Live Demo:** https://project-artemis-psi.vercel.app
+
 ## Table of Contents
 
 1. [Overview](#overview)
@@ -626,7 +628,7 @@ UWB_SECRET_KEY=your-uwb-shared-secret-key-here
 ARTEMIS_ADMIN_KEY=your-strong-admin-key-here
 
 # CORS Configuration
-CORS_ORIGINS=http://localhost:3000,https://yourdomain.com
+CORS_ORIGINS=http://localhost:3000,https://yourdomain.com,https://project-artemis-psi.vercel.app
 
 # Email Service (Resend)
 RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxx
@@ -862,6 +864,8 @@ X-Artemis-Admin-Key: your-admin-key-here
 
 ### Frontend Deployment (Vercel)
 
+The project is automatically deployed to Vercel at: https://project-artemis-psi.vercel.app
+
 The `vercel.json` configuration handles frontend deployment:
 
 ```json
@@ -952,7 +956,7 @@ Before deploying to production:
 - [ ] HTTPS/TLS certificates installed
 - [ ] Rate limiting configured appropriately
 - [ ] Admin API key is strong (32+ characters)
-- [ ] CORS origins restricted to known domains
+- [ ] CORS origins restricted to known domains (including https://project-artemis-psi.vercel.app)
 - [ ] Logging configured and monitored
 - [ ] Error tracking (Sentry, etc.) configured
 - [ ] Load balancing configured if needed
