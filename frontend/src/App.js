@@ -32,47 +32,42 @@ const features = [
   },
 ];
 
-const telemetryRows = ["UWB-PULSE: 6.5GHz", "LATTICE: ML-KEM-768", "VAULT TTL: 004.20s", "PERIMETER: HARDENED"];
+const telemetryRows = ["UWB-PULSE: 6.5GHz", "LATTICE: CEG-KEM-768", "VAULT TTL: 004.20s", "PERIMETER: HARDENED"];
 
 function EnterpriseWorkflow() {
   return (
     <section className="workflow-section reveal" id="workflow" data-testid="workflow-section" style={{ paddingBottom: '6rem' }}>
       <div className="section-intro">
-        <p className="eyebrow" data-testid="workflow-eyebrow">Enterprise deployment</p>
-        <h2 data-testid="workflow-title" style={{ fontSize: 'clamp(2rem, 5vw, 4.5rem)', lineHeight: '0.94', letterSpacing: '-0.075em', marginBottom: '2rem' }}>
-          How Aegis Proximity Vault works.
-        </h2>
+        <p className="eyebrow" data-testid="workflow-eyebrow">Deployment</p>
+        <h2 data-testid="workflow-title">Three gates.<br />One collapsed key.</h2>
       </div>
       <div className="workflow-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
-        <article className="workflow-card" data-testid="workflow-card-1" style={{ border: '1px solid var(--line)', borderRadius: '1.6rem', padding: '1.5rem', background: 'rgba(255, 255, 255, 0.02)' }}>
-          <div className="workflow-icon-wrap" style={{ color: 'var(--green)', marginBottom: '1rem' }}>
-            <Terminal size={24} />
+        <article className="workflow-card" data-testid="workflow-card-1">
+          <span className="workflow-card-bg-num">01</span>
+          <div className="workflow-icon-wrap">
+            <Terminal size={22} />
           </div>
-          <div className="workflow-step" style={{ fontSize: '0.72rem', fontFamily: 'monospace', color: 'var(--green)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-            Step 01 // Initial Setup
-          </div>
-          <h3 style={{ fontSize: '1.35rem', marginBottom: '0.5rem', letterSpacing: '-0.03em' }}>Secure Enclave</h3>
-          <p style={{ color: 'var(--muted)', fontSize: '0.92rem', lineHeight: '1.6' }}>A multi-family wealth office initializes a terminal session.</p>
+          <div className="workflow-step">Step 01 // Initial Setup</div>
+          <h3>Secure Enclave</h3>
+          <p>A multi-family wealth office initializes a terminal session.</p>
         </article>
-        <article className="workflow-card" data-testid="workflow-card-2" style={{ border: '1px solid var(--line)', borderRadius: '1.6rem', padding: '1.5rem', background: 'rgba(255, 255, 255, 0.02)' }}>
-          <div className="workflow-icon-wrap" style={{ color: 'var(--green)', marginBottom: '1rem' }}>
-            <Scan size={24} />
+        <article className="workflow-card" data-testid="workflow-card-2">
+          <span className="workflow-card-bg-num">02</span>
+          <div className="workflow-icon-wrap">
+            <Scan size={22} />
           </div>
-          <div className="workflow-step" style={{ fontSize: '0.72rem', fontFamily: 'monospace', color: 'var(--green)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-            Step 02 // Gemini Audit
-          </div>
-          <h3 style={{ fontSize: '1.35rem', marginBottom: '0.5rem', letterSpacing: '-0.03em' }}>Spatial Gating</h3>
-          <p style={{ color: 'var(--muted)', fontSize: '0.92rem', lineHeight: '1.6' }}>Gemini verifies the operator's physical presence within 10cm using UWB telemetry.</p>
+          <div className="workflow-step">Step 02 // Proximity Audit</div>
+          <h3>Spatial Gating</h3>
+          <p>The UWB anchor verifies physical presence within 10cm of the vault perimeter.</p>
         </article>
-        <article className="workflow-card" data-testid="workflow-card-3" style={{ border: '1px solid var(--line)', borderRadius: '1.6rem', padding: '1.5rem', background: 'rgba(255, 255, 255, 0.02)' }}>
-          <div className="workflow-icon-wrap" style={{ color: 'var(--green)', marginBottom: '1rem' }}>
-            <Shield size={24} />
+        <article className="workflow-card" data-testid="workflow-card-3">
+          <span className="workflow-card-bg-num">03</span>
+          <div className="workflow-icon-wrap">
+            <Shield size={22} />
           </div>
-          <div className="workflow-step" style={{ fontSize: '0.72rem', fontFamily: 'monospace', color: 'var(--green)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-            Step 03 // Key Destruction
-          </div>
-          <h3 style={{ fontSize: '1.35rem', marginBottom: '0.5rem', letterSpacing: '-0.03em' }}>Quantum Armor</h3>
-          <p style={{ color: 'var(--muted)', fontSize: '0.92rem', lineHeight: '1.6' }}>Lattice keys encrypt the transaction, self-destructing the moment the operator walks away.</p>
+          <div className="workflow-step">Step 03 // Key Release</div>
+          <h3>Key Cascade</h3>
+          <p>All three CEG-KEM gates pass; the ML-KEM-768 session key is released and immediately volatile.</p>
         </article>
       </div>
     </section>
@@ -459,15 +454,6 @@ function WaitlistPanel() {
   const [form, setForm] = useState({ name: "", firm: "", email: "" });
   const [loading, setLoading] = useState(false);
 
-  const fetchEntries = async () => {
-    const response = await axios.get(`${API}/waitlist`);
-    setEntries(response.data);
-  };
-
-  useEffect(() => {
-    fetchEntries().catch(() => toast.error("Unable to sync waitlist telemetry."));
-  }, []);
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
@@ -475,7 +461,6 @@ function WaitlistPanel() {
       await axios.post(`${API}/waitlist`, form);
       toast.success("Sandbox access request secured.");
       setForm({ name: "", firm: "", email: "" });
-      await fetchEntries();
     } catch (error) {
       const message = error.response?.data?.detail || "Unable to register this access request.";
       toast.error(message);
@@ -585,52 +570,52 @@ function App() {
   return (
     <main className="artemis-shell" data-testid="artemis-landing-page">
       <Toaster richColors position="top-right" />
-      <div className="ambient ambient-one" />
-      <div className="ambient ambient-two" />
 
       <nav className="nav-bar reveal" data-testid="top-navigation">
         <a className="brand-mark" href="#top" data-testid="brand-link">
-          <span data-testid="brand-symbol">▲</span>
-          <strong data-testid="brand-name">Project Artemis</strong>
+          <span data-testid="brand-symbol">AEGIS</span>
+          <span className="brand-divider" />
+          <span className="brand-sub">Proximity Vault</span>
         </a>
         <div className="nav-links" data-testid="navigation-links">
-          <a href="#workflow" data-testid="nav-workflow-link">Workflow</a>
+          <a href="#workflow" data-testid="nav-workflow-link">Protocol</a>
           <a href="#simulation" data-testid="nav-simulation-link">Simulation</a>
-          <a href="#features" data-testid="nav-features-link">Capabilities</a>
-          <a href="#waitlist" data-testid="nav-waitlist-link">Waitlist</a>
+          <a href="#features" data-testid="nav-features-link">Security</a>
+          <a href="#waitlist" data-testid="nav-waitlist-link" className="nav-cta">Request Access</a>
         </div>
       </nav>
 
       <section className="hero-section" id="top" data-testid="hero-section">
-        <div className="hero-copy reveal reveal-delay-1">
-          <div className="status-strip" data-testid="hero-status-strip">
-            <ShieldCheck size={16} /> Secure quantum perimeter online
-          </div>
-          <p className="eyebrow" data-testid="hero-eyebrow">Aegis Proximity Vault</p>
-          <h1 data-testid="hero-title">Aegis Proximity Vault</h1>
-          <p className="hero-subtitle" data-testid="hero-subtitle">
-            Defend enterprise networks against Harvest-Now, Decrypt-Later quantum threats with spatial-gated lattice cryptography.
-          </p>
-          <div className="hero-actions" data-testid="hero-actions">
-            <a className="primary-button" href="#simulation" data-testid="launch-console-button">
-              Launch Console <ArrowUpRight size={18} />
-            </a>
-            <a className="ghost-button" href="#waitlist" data-testid="join-waitlist-button">Join sandbox waitlist</a>
+        <video
+          className="hero-video"
+          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260403_050628_c4e32401-fab4-4a27-b7a8-6e9291cd5959.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+        />
+        <div className="hero-content">
+          <div className="hero-copy reveal reveal-delay-1">
+            <p className="eyebrow" data-testid="hero-eyebrow">Aegis Proximity Vault</p>
+            <h1 data-testid="hero-title">AEGIS<br />Proximity Vault</h1>
+            <p className="hero-subtitle" data-testid="hero-subtitle">
+              Aegis binds CEG-KEM lattice keys to a live UWB spatial perimeter. No proximity, no access, no exceptions.
+            </p>
+            <div className="hero-actions" data-testid="hero-actions">
+              <a className="primary-button" href="#simulation" data-testid="launch-console-button">
+                Launch Console <ArrowUpRight size={16} />
+              </a>
+              <a className="ghost-button" href="#waitlist" data-testid="join-waitlist-button">Request access</a>
+            </div>
           </div>
         </div>
-
-        <div className="hero-console reveal reveal-delay-2" data-testid="hero-console-card">
-          <div className="console-topline" data-testid="console-topline">
-            <span /> ARTEMIS // AE-01
-          </div>
-          <div className="orbital-vault" data-testid="orbital-vault-visual">
-            <div className="vault-ring ring-a" />
-            <div className="vault-ring ring-b" />
-            <div className="vault-core"><ShieldCheck size={42} /></div>
-          </div>
+        <div className="hero-console" data-testid="hero-console-card" style={{display:'none'}}>
           <div className="telemetry-grid" data-testid="telemetry-grid">
             {telemetryRows.map((row) => (
-              <div key={row} data-testid={`telemetry-row-${row.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}>{row}</div>
+              <div key={row} data-testid={`telemetry-row-${row.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}>
+                <span>{row.split(":")[0]}</span>
+                <span>{row.split(":")[1]}</span>
+              </div>
             ))}
           </div>
         </div>
@@ -644,15 +629,16 @@ function App() {
 
       <section className="features-section" id="features" data-testid="features-section">
         <div className="section-intro reveal">
-          <p className="eyebrow" data-testid="features-eyebrow">Cyber-physical defense layer</p>
-          <h2 data-testid="features-title">Quantum-safe access that fails closed.</h2>
+          <p className="eyebrow" data-testid="features-eyebrow">Core Protocol</p>
+          <h2 data-testid="features-title">Quantum-safe access<br />that fails closed.</h2>
         </div>
         <div className="feature-grid" data-testid="features-grid">
           {features.map((feature, index) => {
             const Icon = feature.icon;
             return (
               <article className={`feature-card reveal reveal-delay-${index + 1}`} key={feature.title} data-testid={`feature-card-${index + 1}`}>
-                <Icon className="feature-icon" size={30} />
+                <Icon className="feature-icon" size={22} strokeWidth={1.5} />
+                <div className="feature-step-num">0{index + 1}</div>
                 <h3 data-testid={`feature-title-${index + 1}`}>{feature.title}</h3>
                 <p data-testid={`feature-copy-${index + 1}`}>{feature.copy}</p>
               </article>
