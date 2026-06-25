@@ -1,19 +1,152 @@
-.hero-section { min-height: calc(100vh - 90px); display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr); align-items: center; gap: clamp(2rem, 5vw, 5rem); padding: 4rem 0 6rem; }
-.status-strip { width: fit-content; display: inline-flex; align-items: center; gap: 0.55rem; padding: 0.65rem 0.95rem; border: 1px solid var(--line); border-radius: 999px; color: var(--green); background: var(--green-soft); box-shadow: inset 0 0 24px rgba(66, 255, 155, 0.08); }
-.hero-copy h1 { margin-bottom: 1.25rem; max-width: 780px; font-size: clamp(4rem, 9vw, 8.6rem); line-height: 0.82; letter-spacing: -0.095em; }
-.hero-subtitle { max-width: 680px; color: #bed2c9; font-size: clamp(1rem, 2vw, 1.18rem); line-height: 1.75; }
-.hero-actions { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2.2rem; }
-.hero-console { min-height: 590px; border-radius: 2rem; padding: 1.2rem; overflow: hidden; }
-.console-topline { display: flex; align-items: center; gap: 0.7rem; color: var(--muted); font-size: 0.78rem; }
-.console-topline span { width: 0.62rem; height: 0.62rem; border-radius: 50%; background: var(--green); box-shadow: 0 0 16px var(--green); }
-.orbital-vault { min-height: 390px; position: relative; display: grid; place-items: center; margin: 1rem 0; border-radius: 1.4rem; background: radial-gradient(circle, rgba(66, 255, 155, 0.18), transparent 32%), linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent); overflow: hidden; }
-.vault-ring { position: absolute; border: 1px solid rgba(66, 255, 155, 0.34); border-radius: 48%; box-shadow: 0 0 40px rgba(66, 255, 155, 0.12); }
-.ring-a { width: 64%; aspect-ratio: 1; animation: orbit 16s linear infinite; }
-.ring-b { width: 42%; aspect-ratio: 1; transform: rotate(64deg); animation: orbitReverse 12s linear infinite; }
-.vault-core { width: 9rem; aspect-ratio: 1; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 34% 66% 45% 55%; color: var(--green); background: rgba(0, 0, 0, 0.36); box-shadow: 0 0 80px rgba(66, 255, 155, 0.28), inset 0 0 30px rgba(66, 255, 155, 0.1); }
-.telemetry-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
-.telemetry-grid div { border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 1rem; padding: 0.9rem; color: #d7fff0; background: rgba(255, 255, 255, 0.035); font-size: 0.78rem; }
-@keyframes orbit { to { transform: rotate(360deg); } }
-@keyframes orbitReverse { from { transform: rotate(64deg); } to { transform: rotate(-296deg); } }
-@media (max-width: 980px) { .hero-section { grid-template-columns: 1fr; padding-top: 2rem; } .hero-console { min-height: auto; } }
-@media (max-width: 680px) { .hero-copy h1 { font-size: clamp(3.4rem, 17vw, 5rem); } .hero-actions { flex-direction: column; align-items: stretch; } .telemetry-grid { grid-template-columns: 1fr; } }
+/* ── Hero ── */
+.hero-section {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+
+.hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding: 0 clamp(1.5rem, 5vw, 4rem) 4rem;
+}
+
+/* Left column */
+.hero-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  max-width: 700px;
+}
+
+.hero-copy h1 {
+  font-size: clamp(3rem, 6.5vw, 5.5rem);
+  font-weight: 700;
+  line-height: 0.93;
+  letter-spacing: -0.055em;
+  color: #ffffff;
+  margin-bottom: 1.5rem;
+  max-width: 680px;
+}
+
+.hero-subtitle {
+  font-size: 1rem;
+  color: rgba(255,255,255,0.75);
+  line-height: 1.75;
+  max-width: 500px;
+  margin-bottom: 2rem;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0;
+}
+
+/* Hero eyebrow on video — white */
+.hero-section .eyebrow {
+  color: rgba(255,255,255,0.7);
+}
+
+/* Hero console hidden */
+.hero-console {
+  display: none;
+}
+
+.console-topline {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.75rem;
+}
+
+.console-topline span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: none;
+  display: block;
+}
+
+/* Hide orbital vault — replaced by telemetry table */
+.orbital-vault {
+  min-height: auto;
+  background: none;
+  overflow: visible;
+  border-radius: 0;
+  position: relative;
+  margin: 0;
+}
+
+.vault-ring { display: none; }
+.vault-core { display: none; }
+
+/* Telemetry — clean row table */
+.telemetry-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  grid-template-columns: unset;
+}
+
+.telemetry-grid div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  padding: 0.7rem 0;
+  background: transparent;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--muted-light);
+}
+
+.telemetry-grid div:last-child { border-bottom: none; }
+
+.hero-stats-mono {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--muted);
+  line-height: 2;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+/* Ghost button on video needs to be white */
+.hero-section .ghost-button {
+  color: rgba(255,255,255,0.8);
+}
+
+.hero-section .ghost-button:hover {
+  color: #fff;
+}
+
+/* ── Responsive ── */
+@media (max-width: 680px) {
+  .hero-copy h1 { font-size: clamp(2.6rem, 12vw, 4rem); }
+  .hero-actions { flex-direction: column; }
+}

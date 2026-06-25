@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
+import html
 import logging
 import secrets
 from pathlib import Path
@@ -149,6 +150,13 @@ async def create_waitlist_entry(input: WaitlistCreate):
     doc = entry.model_dump()
     await db.waitlist_entries.insert_one(doc)
 
+    # Send emails via Resend if API key is configured.
+    # User-supplied fields are HTML-escaped before interpolation so a signer
+    # cannot inject markup (phishing links, scripts) into the rendered emails.
+    if resend.api_key:
+        safe_name = html.escape(clean_name)
+        safe_firm = html.escape(clean_firm)
+        safe_email = html.escape(clean_email)
     # Send emails via Resend if API key is configured
     if resend.api_key:
         try:
@@ -156,6 +164,7 @@ async def create_waitlist_entry(input: WaitlistCreate):
                 "from": "Project Artemis <onboarding@resend.dev>",
                 "to": [clean_email],
                 "subject": "Waitlist Confirmation - Project Artemis",
+                "html": f"<p>Hi {safe_name},</p><p>Your request for sandbox access on behalf of <strong>{safe_firm}</strong> has been secured.</p><p>We will notify you when your evaluation period begins.</p><br><p>Best regards,<br>The Artemis Team</p>"
                 "html": f"<p>Hi {clean_name},</p><p>Your request for sandbox access on behalf of <strong>{clean_firm}</strong> has been secured.</p><p>We will notify you when your evaluation period begins.</p><br><p>Best regards,<br>The Artemis Team</p>"
             })
         except Exception as e:
@@ -165,6 +174,7 @@ async def create_waitlist_entry(input: WaitlistCreate):
                 "from": "Project Artemis <onboarding@resend.dev>",
                 "to": ["artemiscorpofficial@gmail.com"],
                 "subject": f"New Waitlist Signup: {clean_name} ({clean_firm})",
+                "html": f"<p>A new signup just came in:</p><ul><li><strong>Name:</strong> {safe_name}</li><li><strong>Firm:</strong> {safe_firm}</li><li><strong>Email:</strong> {safe_email}</li></ul>"
                 "html": f"<p>A new signup just came in:</p><ul><li><strong>Name:</strong> {clean_name}</li><li><strong>Firm:</strong> {clean_firm}</li><li><strong>Email:</strong> {clean_email}</li></ul>"
             })
         except Exception as e:
