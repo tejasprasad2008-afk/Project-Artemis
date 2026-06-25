@@ -157,12 +157,15 @@ async def create_waitlist_entry(input: WaitlistCreate):
         safe_name = html.escape(clean_name)
         safe_firm = html.escape(clean_firm)
         safe_email = html.escape(clean_email)
+    # Send emails via Resend if API key is configured
+    if resend.api_key:
         try:
             resend.Emails.send({
                 "from": "Project Artemis <onboarding@resend.dev>",
                 "to": [clean_email],
                 "subject": "Waitlist Confirmation - Project Artemis",
                 "html": f"<p>Hi {safe_name},</p><p>Your request for sandbox access on behalf of <strong>{safe_firm}</strong> has been secured.</p><p>We will notify you when your evaluation period begins.</p><br><p>Best regards,<br>The Artemis Team</p>"
+                "html": f"<p>Hi {clean_name},</p><p>Your request for sandbox access on behalf of <strong>{clean_firm}</strong> has been secured.</p><p>We will notify you when your evaluation period begins.</p><br><p>Best regards,<br>The Artemis Team</p>"
             })
         except Exception as e:
             logging.getLogger(__name__).warning("Failed to send waitlist confirmation email: %s", str(e))
@@ -172,6 +175,7 @@ async def create_waitlist_entry(input: WaitlistCreate):
                 "to": ["artemiscorpofficial@gmail.com"],
                 "subject": f"New Waitlist Signup: {clean_name} ({clean_firm})",
                 "html": f"<p>A new signup just came in:</p><ul><li><strong>Name:</strong> {safe_name}</li><li><strong>Firm:</strong> {safe_firm}</li><li><strong>Email:</strong> {safe_email}</li></ul>"
+                "html": f"<p>A new signup just came in:</p><ul><li><strong>Name:</strong> {clean_name}</li><li><strong>Firm:</strong> {clean_firm}</li><li><strong>Email:</strong> {clean_email}</li></ul>"
             })
         except Exception as e:
             logging.getLogger(__name__).warning("Failed to send internal waitlist notification: %s", str(e))
